@@ -1,16 +1,14 @@
-// replace the name of the contract with which one you want to deploy!
-const contractName = "Game1";
+const { ethers } = require("hardhat");
 
 async function main() {
-  const Game = await hre.ethers.getContractFactory(contractName);
-  // if you need to add constructor arguments for the particular game, add them here:
-  const game = await Game.deploy();
-  console.log(`${contractName} deployed to address: ${game.address}`);
+  const Game3 = await ethers.getContractFactory("Game3");
+  const game = await Game3.deploy();
+  await game.deployed();
+
+  console.log("✅ Game3 deployed at:", game.address);
 }
 
-main()
- .then(() => process.exit(0))
- .catch(error => {
-   console.error(error);
-   process.exit(1);
- });
+main().catch((err) => {
+  console.error("❌ Deployment failed:", err);
+  process.exit(1);
+});
