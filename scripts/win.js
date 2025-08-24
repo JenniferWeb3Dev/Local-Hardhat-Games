@@ -1,27 +1,32 @@
 const { ethers } = require("hardhat");
 
 async function main() {
-  const gameAddress = "0xB7f8BC63BbcaD18155201308C8f3540b07f84F5e"; 
+  const gameAddress = "0x9A676e781A523b5d0C0e43731313A708CB607508"; 
 
-  const Game4 = await ethers.getContractFactory("Game4");
-  const game = Game4.attach(gameAddress);
+  const Game5 = await ethers.getContractFactory("Game5");
+  const game = await Game5.attach(gameAddress);
 
   const [player] = await ethers.getSigners();
 
-  // Deposit 1 ether
-  await (await game.connect(player).deposit({ value: ethers.utils.parseEther("1") })).wait();
+  // Step 1: Give allowance
+  const tx1 = await game.connect(player).giveMeAllowance(10000);
+  await tx1.wait();
 
-  // Call win
-  const tx = await game.connect(player).win();
-  const receipt = await tx.wait();
+  // Step 2: Mint 10000
+  const tx2 = await game.connect(player).mint(10000);
+  await tx2.wait();
+
+  // Step 3: Call win
+  const tx3 = await game.connect(player).win();
+  const receipt = await tx3.wait();
 
   const winnerEvent = receipt.events.find(e => e.event === "Winner");
 
   if (winnerEvent) {
-    console.log("🎉 SUCCESS! Winner event emitted!");
-    console.log("🏆 Winner:", winnerEvent.args.winner);
+    console.log("🏆 SUCCESS! Winner event emitted.");
+    console.log("🎉 Winner:", winnerEvent.args.winner);
   } else {
-    console.log("❌ Win failed. No Winner event found.");
+    console.log("❌ No Winner event found.");
   }
 }
 
