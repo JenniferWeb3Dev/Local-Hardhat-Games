@@ -1,14 +1,13 @@
 const { ethers } = require("hardhat");
 
 async function main() {
-  const Game3 = await ethers.getContractFactory("Game3");
-  const game = await Game3.deploy();
+  const Game4 = await ethers.getContractFactory("Game4");
+  const game = await Game4.deploy();
   await game.deployed();
-
-  console.log("✅ Game3 deployed at:", game.address);
+  console.log("✅ Game4 deployed at:", game.address);
 }
 
 main().catch((err) => {
-  console.error("❌ Deployment failed:", err);
-  process.exit(1);
+  console.error("💥 Deployment failed:", err);
 });
+

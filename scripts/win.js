@@ -1,24 +1,21 @@
 const { ethers } = require("hardhat");
 
 async function main() {
-  const gameAddress = "0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6"; 
+  const gameAddress = "0xB7f8BC63BbcaD18155201308C8f3540b07f84F5e"; 
 
-  const Game3 = await ethers.getContractFactory("Game3");
-  const game = await Game3.attach(gameAddress);
+  const Game4 = await ethers.getContractFactory("Game4");
+  const game = Game4.attach(gameAddress);
 
-  const [addr1, addr2, addr3] = await ethers.getSigners();
+  const [player] = await ethers.getSigners();
 
-  // Each one sends ETH using buy()
-  await (await game.connect(addr1).buy({ value: ethers.utils.parseEther("1") })).wait();
-  await (await game.connect(addr2).buy({ value: ethers.utils.parseEther("1") })).wait();
-  await (await game.connect(addr3).buy({ value: ethers.utils.parseEther("1") })).wait();
+  // Deposit 1 ether
+  await (await game.connect(player).deposit({ value: ethers.utils.parseEther("1") })).wait();
 
-  // Call win() with the 3 buyers
-  const tx = await game.win(addr1.address, addr2.address, addr3.address);
+  // Call win
+  const tx = await game.connect(player).win();
   const receipt = await tx.wait();
 
-  // Check for the Winner event
-  const winnerEvent = receipt.events.find((e) => e.event === "Winner");
+  const winnerEvent = receipt.events.find(e => e.event === "Winner");
 
   if (winnerEvent) {
     console.log("🎉 SUCCESS! Winner event emitted!");

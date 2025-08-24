@@ -1,16 +1,18 @@
-//SPDX-License-Identifier: MIT
-pragma solidity ^0.8.17;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
 
 contract Game4 {
-  uint8 y = 210;
+    mapping(address => uint256) public balances;
 
-  event Winner(address winner);
-
-  function win(uint8 x) public {
-    unchecked {
-        uint8 sum = x + y;
-        require(sum == 10, "Incorrect argument passed in!");
+    function deposit() public payable {
+        balances[msg.sender] += msg.value;
     }
-    emit Winner(msg.sender);
-  }
+
+    function win() public {
+        require(balances[msg.sender] >= 1 ether, "Not enough ether deposited");
+        payable(msg.sender).transfer(address(this).balance);
+        emit Winner(msg.sender);
+    }
+
+    event Winner(address winner);
 }
